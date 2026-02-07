@@ -2,13 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=https://www.youtube.com/watch?v=pX7nsPPWYy0">
-    <title>Page Not Found - Redirecting...</title>
+    <link rel="prefetch" href="/redirects.json">
+    <meta content="cootshk.dev" property="og:title" />
+    <meta content="Redirecting..." property="og:description" />
+    <meta content="#CB641C" data-react-helmet="true" name="theme-color" />
+    <title>Redirecting...</title>
     <script>
-        window.location.href = "https://www.youtube.com/watch?v=pX7nsPPWYy0";
+        function removePrefix(str, prefix) {
+            if (str.startsWith(prefix)) 
+                return str.substring(prefix.length)
+            return str
+        }
+
+        // redirects.json is regex-matched in order, first match redirects
+        fetch("/redirects.json")
+            .then(resp => resp.json())
+            .then((json) => {
+                const path = removePrefix(window.location.href.trim(), "https://cootshk.dev/")
+                for (const [key, value] of Object.entries(json)) {
+                    if (new RegExp("^"+key, "gmi").test(path))
+                        open(value, "_self")
+                }
+                console.warn("No redirect found!")
+                open("/", "_self")
+            })
     </script>
 </head>
 <body>
-    <p>Redirecting to <a href="https://www.youtube.com/watch?v=pX7nsPPWYy0">https://www.youtube.com/watch?v=pX7nsPPWYy0</a>...</p>
+    <p>Redirecting...</p>
 </body>
 </html>
